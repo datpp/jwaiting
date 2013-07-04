@@ -2,7 +2,7 @@
  * Author: datpp
  * Date: 7/3/13
  * Time: 2:29 PM
- * Version: 1.0
+ * Version: 1.0-beta1
  *
  * Require: JQuery > 1.4
  */
