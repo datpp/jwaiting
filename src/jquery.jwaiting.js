@@ -24,7 +24,7 @@
         this.img = $('<img>').attr('src', src)
                              .attr('alt', _settings.alt)
                              .attr('title', _settings.title);
-    }
+    };
 
     /**
      * Clone image to overlay
@@ -57,7 +57,7 @@
         });
 
         divWrapper.append(img);
-    }
+    };
 
     /**
      * JWaiting object
@@ -143,7 +143,7 @@
         handleElement.bind('jwaiting_close', function() {
             $overlay.hide();
         });
-    }
+    };
 
     /**
      * Method to declare a plugin for JQuery
