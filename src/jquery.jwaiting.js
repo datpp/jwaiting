@@ -25,15 +25,7 @@
                              .attr('alt', _settings.alt)
                              .attr('title', _settings.title);
     }
-    JLoadingIMG.prototype.show = function() {
-        this.img.show();
-    }
-    JLoadingIMG.prototype.hide = function() {
-        this.img.hide();
-    }
-    JLoadingIMG.prototype.remove = function() {
-        this.img.remove();
-    }
+
     JLoadingIMG.prototype.appendTo = function(parentObject, options) {
 
         var settings_default = { title: '', alt: ''};
@@ -90,6 +82,11 @@
          */
         var $overlay;
 
+        /**
+         * Create JWaiting image object
+         */
+        var imageLoading = new JLoadingIMG(settings.loadingImg, {title: settings.loadingText});
+
         if ('BODY' == element.tagName) {
             elementRealSizePosition = {
                 top     : 0,
@@ -108,7 +105,7 @@
                     'position'              : 'fixed',
                     'display'               : 'none',
                     'text-align'            : 'center',
-                    'z-index'               : 9998,
+                    'z-index'               : parseInt(waitingElement.css('z-index')) + 1,
                     'width'                 : elementRealSizePosition.width,
                     'height'                : elementRealSizePosition.height,
                     'top'                   : elementRealSizePosition.top,
@@ -118,10 +115,6 @@
                 });
                 $('body').append($overlay);
 
-                /**
-                 * Clone image loading object
-                 */
-                var imageLoading = settings.imageLoading;
                 imageLoading.appendTo($overlay, {title: settings.title, alt: settings.alt});
 
                 addedBodyOverlay = true;
@@ -142,7 +135,7 @@
                 'position'              : 'absolute',
                 'display'               : 'none',
                 'text-align'            : 'center',
-                'z-index'               : 9998,
+                'z-index'               : parseInt(waitingElement.css('z-index')) + 1,
                 'width'                 : elementRealSizePosition.width,
                 'height'                : elementRealSizePosition.height,
                 'top'                   : elementRealSizePosition.top,
@@ -152,10 +145,6 @@
             });
             $('body').append($overlay);
 
-            /**
-             * Clone image loading object
-             */
-            var imageLoading = settings.imageLoading;
             imageLoading.appendTo($overlay, {title: settings.title, alt: settings.alt});
         }
 
@@ -191,10 +180,11 @@
     $.fn.jwaiting.defaults = {
         opacity         : 0.2,
         allowEsc        : true,
-        imageLoading    : new JLoadingIMG('../src/loading.gif', {title: 'Loading ....'}),
-        bgColor		    : '#000',
-        icon_only       : false,
-        text_only       : false
+        loadingImg      : '../src/loading.gif',
+        loadingText     : 'Loading ....',
+        bgColor		    : '#000'
+        // @todo: icon_only       : false,
+        // @todo: text_only       : false
     };
 
     function randomInt(min, max) {
