@@ -26,6 +26,12 @@
                              .attr('title', _settings.title);
     }
 
+    /**
+     * Clone image to overlay
+     *
+     * @param parentObject
+     * @param options
+     */
     JLoadingIMG.prototype.appendTo = function(parentObject, options) {
 
         var settings_default = { title: '', alt: ''};
@@ -67,95 +73,84 @@
         var settings = $.extend({}, $.fn.jwaiting.defaults, options);
 
         /**
-         * Element will apply waiting
-         * @type {*|HTMLElement}
-         */
-        var waitingElement = $(element);
-
-        /**
          * elementRealSize that is the size of element which included padding & border size
          */
         var elementRealSizePosition = {};
 
         /**
-         * Overlay
+         * Overlay of each element using jwaiting
+         *
+         * @type {*|HTMLElement}
          */
-        var $overlay;
+        var $overlay = $('<div></div>');
 
         /**
          * Create JWaiting image object
          */
         var imageLoading = new JLoadingIMG(settings.loadingImg, {title: settings.loadingText});
 
-        if ('BODY' == element.tagName) {
-            elementRealSizePosition = {
-                top     : 0,
-                left    : 0,
-                width   : $(window).width(),
-                height  : $(window).height()
-            };
+        /**
+         * element will be handle
+         *
+         * @type {*|HTMLElement}
+         */
+        var handleElement = $(element);
 
-            /**
-             * With BODY element we just add once overlay
-             */
-            if (!addedBodyOverlay) {
-                $overlay = $('<div></div>');
-                $overlay.attr('id', 'jwaiting-overlay-body');
-                $overlay.css({
-                    'position'              : 'fixed',
-                    'display'               : 'none',
-                    'text-align'            : 'center',
-                    'z-index'               : parseInt(waitingElement.css('z-index')) + 1,
-                    'width'                 : elementRealSizePosition.width,
-                    'height'                : elementRealSizePosition.height,
-                    'top'                   : elementRealSizePosition.top,
-                    'left'                  : elementRealSizePosition.left,
-                    'background-color'      : settings.bgColor,
-                    'opacity'               : settings.opacity
-                });
-                $('body').append($overlay);
+        // just process once time
+        if (handleElement.hasClass('jwaiting-added')) return;
 
-                imageLoading.appendTo($overlay, {title: settings.title, alt: settings.alt});
+        handleElement.addClass('jwaiting-added');
 
-                addedBodyOverlay = true;
-            }
+        // Caculate position & size of element using jwaiting
+        if ('BODY' == element.tagName) {    // in this case I want use window size for body (just adjustment for display)
+            elementRealSizePosition         = {top:0, left:0};
+            elementRealSizePosition.width   = $(window).width(); //handleElement.outerWidth(true) ||
+            elementRealSizePosition.height  = $(window).height(); //handleElement.outerHeight(true) ||
         }
         else {
-            elementRealSizePosition         = waitingElement.offset();
-            elementRealSizePosition.width   = waitingElement.outerWidth();
-            elementRealSizePosition.height  = waitingElement.outerHeight();
-
-            /**
-             * overlay for each a element need separated.
-             * @type {*|HTMLElement}
-             */
-            $overlay = $('<div></div>');
-            $overlay.attr('id', 'jwaiting-overlay-element-' + (waitingElement.attr('id') || randomInt(100,1000)));
-            $overlay.css({
-                'position'              : 'absolute',
-                'display'               : 'none',
-                'text-align'            : 'center',
-                'z-index'               : parseInt(waitingElement.css('z-index')) + 1,
-                'width'                 : elementRealSizePosition.width,
-                'height'                : elementRealSizePosition.height,
-                'top'                   : elementRealSizePosition.top,
-                'left'                  : elementRealSizePosition.left,
-                'background-color'      : settings.bgColor,
-                'opacity'               : settings.opacity
-            });
-            $('body').append($overlay);
-
-            imageLoading.appendTo($overlay, {title: settings.title, alt: settings.alt});
+            elementRealSizePosition         = handleElement.offset();
+            elementRealSizePosition.width   = handleElement.outerWidth();
+            elementRealSizePosition.height  = handleElement.outerHeight();
         }
 
-        waitingElement.bind('jwaiting_open', function() {
+        // Caculate position of overlay
+        $overlay.attr('id', 'jwaiting-overlay-element-' + (handleElement.attr('id') || randomInt(100,1000)));
+        $overlay.css({
+            'position'              : 'absolute',
+            'display'               : 'none',
+            'text-align'            : 'center',
+            'z-index'               : parseInt(handleElement.css('z-index')) + 1,
+            'width'                 : elementRealSizePosition.width,
+            'height'                : elementRealSizePosition.height,
+            'top'                   : elementRealSizePosition.top,
+            'left'                  : elementRealSizePosition.left,
+            'background-color'      : settings.bgColor,
+            'opacity'               : settings.opacity
+        });
+
+        // Prepare overlay element in body
+        $('body').append($overlay);
+
+        // Append loading image to overlay
+        imageLoading.appendTo($overlay, {title: settings.title, alt: settings.alt});
+
+        // Bind event open
+        handleElement.bind('jwaiting_open', function() {
             $overlay.show();
         });
-        waitingElement.bind('jwaiting_close', function() {
+
+        // Bind event close
+        handleElement.bind('jwaiting_close', function() {
             $overlay.hide();
         });
     }
 
+    /**
+     * Method to declare a plugin for JQuery
+     *
+     * @param options
+     * @returns {*}
+     */
     $.fn.jwaiting = function(options) {
         var settings = $.extend({}, $.fn.jwaiting.defaults, options);
 
@@ -177,6 +172,11 @@
         });
     };
 
+    /**
+     * Default settings of JWaiting
+     *
+     * @type {{opacity: number, allowEsc: boolean, loadingImg: string, loadingText: string, bgColor: string}}
+     */
     $.fn.jwaiting.defaults = {
         opacity         : 0.2,
         allowEsc        : true,
@@ -187,6 +187,13 @@
         // @todo: text_only       : false
     };
 
+    /**
+     * Generate a random number in a range
+     *
+     * @param min
+     * @param max
+     * @returns {Number}
+     */
     function randomInt(min, max) {
         return parseInt(Math.floor(Math.random()*(max-min+1)+min));
     };
