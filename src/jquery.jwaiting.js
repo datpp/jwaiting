@@ -97,17 +97,23 @@
         var handleElement = $(element);
 
         // just process once time
-        if (handleElement.hasClass('jwaiting-added')) return;
+        if (handleElement.hasClass('jwaiting-added')) {
+            handleElement.trigger('jwaiting_open');
+            return;
+        }
 
         handleElement.addClass('jwaiting-added');
 
+        var overlay_position;
         // Caculate position & size of element using jwaiting
         if ('BODY' == element.tagName) {    // in this case I want use window size for body (just adjustment for display)
+            overlay_position = 'fixed';
             elementRealSizePosition         = {top:0, left:0};
             elementRealSizePosition.width   = $(window).width(); //handleElement.outerWidth(true) ||
             elementRealSizePosition.height  = $(window).height(); //handleElement.outerHeight(true) ||
         }
         else {
+            overlay_position = 'absolute';
             elementRealSizePosition         = handleElement.offset();
             elementRealSizePosition.width   = handleElement.outerWidth();
             elementRealSizePosition.height  = handleElement.outerHeight();
@@ -116,8 +122,7 @@
         // Caculate position of overlay
         $overlay.attr('id', 'jwaiting-overlay-element-' + (handleElement.attr('id') || randomInt(100,1000)));
         $overlay.css({
-            'position'              : 'absolute',
-            'display'               : 'none',
+            'position'              : overlay_position,
             'text-align'            : 'center',
             'z-index'               : parseInt(handleElement.css('z-index')) + 1,
             'width'                 : elementRealSizePosition.width,

@@ -1,9 +1,0 @@
-/**
- * Created with JetBrains PhpStorm.
- * User: datpp
- * Date: 7/4/13
- * Time: 6:18 PM
- * Version: 1.0beta-1
- * URL: https://github.com/datpp/jwaiting
- */
-(function(n){function r(n,t){return parseInt(Math.floor(Math.random()*(t-n+1)+n))}var u=!1,i=function(t,i){var u={title:"",alt:""},r=n.extend({},u,i);this.img=n("<img>").attr("src",t).attr("alt",r.alt).attr("title",r.title)},t;i.prototype.appendTo=function(t,i){var e={title:"",alt:""},f=n.extend({},e,i),u=n("<div></div>").css("position","relative"),r;t.append(u),r=this.img.clone(),r.load(function(){n(this).css({position:"absolute",top:parseInt((t.height()-r.height())/2),left:parseInt((t.width()-r.width())/2)}).attr("alt",f.alt).attr("title",f.title)}),u.append(r)},t=function(t,u){var o=n.extend({},n.fn.jwaiting.defaults,u),f={},s=n("<div></div>"),h=new i(o.loadingImg,{title:o.loadingText}),e=n(t);if(e.hasClass("jwaiting-added"))return;e.addClass("jwaiting-added"),"BODY"==t.tagName?(f={top:0,left:0},f.width=n(window).width(),f.height=n(window).height()):(f=e.offset(),f.width=e.outerWidth(),f.height=e.outerHeight()),s.attr("id","jwaiting-overlay-element-"+(e.attr("id")||r(100,1e3))),s.css({position:"absolute",display:"none","text-align":"center","z-index":parseInt(e.css("z-index"))+1,width:f.width,height:f.height,top:f.top,left:f.left,"background-color":o.bgColor,opacity:o.opacity}),n("body").append(s),h.appendTo(s,{title:o.title,alt:o.alt}),e.bind("jwaiting_open",function(){s.show()}),e.bind("jwaiting_close",function(){s.hide()})},n.fn.jwaiting=function(i){var u=n.extend({},n.fn.jwaiting.defaults,i),r;return u.allowEsc&&(r=n(this),n(document).bind("keydown",function(n){n.keyCode==27&&r.trigger("jwaiting_close")})),this.each(function(){var e=n(this),f=new t(this,i);e.data("jwaiting",f)})},n.fn.jwaiting.defaults={opacity:.2,allowEsc:!0,loadingImg:"../src/loading.gif",loadingText:"Loading ....",bgColor:"#000"}})(jQuery)
