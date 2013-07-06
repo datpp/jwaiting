@@ -97,12 +97,12 @@
         var handleElement = $(element);
 
         // just process once time
-        if (handleElement.hasClass('jwaiting-added')) {
+        if (handleElement.hasClass('jwaiting-processed')) {
             handleElement.trigger('jwaiting_open');
             return;
         }
 
-        handleElement.addClass('jwaiting-added');
+        handleElement.addClass('jwaiting-processed');
 
         var overlay_position;
         // Caculate position & size of element using jwaiting
@@ -147,6 +147,11 @@
         // Bind event close
         handleElement.bind('jwaiting_close', function() {
             $overlay.hide();
+        });
+
+        // Bind event close
+        handleElement.bind('jwaiting_remove', function() {
+            $overlay.remove();
         });
     };
 
